@@ -1,0 +1,610 @@
+#:set font_matrix "C:\\Users\\boralevi\\AppData\\Local\\Microsoft\\Windows\\Fonts\\matrix regular.ttf"
+#:set font_size2 "30dp"
+#:set img_choix_fichier 'img/_1_Accueil/NouveauchoixFichierSimple.png'
+# affichage de l'écran principal. RootWidget est la class de notre menu principal on doit l'appeler ici au début du
+# fichier .kv sans aucun signe "<>". Ces signes servent à définir des classes pour le fichier .kv
+RootWidget:
+
+<CanvasKey@FloatLayout>
+    canvas:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'img/_1_Accueil/FondEcranChargerClef.png'
+            size: self.size
+
+<CanvasCryptage@FloatLayout>
+    canvas:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'img/_1_Accueil/FondEcranCryptage.png'
+            size: self.size
+
+<CanvasDecryptage@FloatLayout>
+    canvas:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'img/_1_Accueil/FondEcranDecrypter.png'
+            size: self.size
+
+#:set font_size1 "30dp"
+<ChargerClef@Screen>:
+    id:load_key_layout
+    CanvasKey:
+    GridLayout:
+        id:load_key_layout
+        cols: 1
+        size_hint: .72,.3
+        pos_hint: {"center_x":.5,"center_y":.5}
+        Button:
+            text: "Charger le fichier 'secret.key' depuis le current working directory"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                app.root.ids.S1.keyloaded()
+                root.loadkey()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "right"
+        Button:
+            text: "Charger un autre fichier clé"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.b_state = True
+                root.createkeyFlag = False
+                root.chooseFile()
+        Button:
+            text: "Générer une nouvelle clé et l'enregister sous un nouveau nom"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.b_state = True
+                root.createkeyFlag = True
+                root.chooseFile()
+        Button:
+            text: "Retour"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "right"
+
+<ChoixFichier@FloatLayout>:
+    id: choix
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_choix_fichier
+            pos: self.pos
+            size: self.size
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+# on définit une variable générale pour les coordonnées de cette layout
+#:set s .3
+ #   canvas:
+#
+ #       Color:
+  #          rgb: 1,0,0
+   #     Rectangle:
+    #        pos: self.center_x-300, self.center_y-100
+     #       size: dp(s*500), dp(s*100)
+
+    Label:
+    # instruction pour l'input utilisateur
+        id:label_choix
+        text: root.text
+
+        size_hint: .3,.3
+        pos_hint: {"center_x":.4,"center_y":.35}
+
+        font_size : self.width/10
+        font_name: font_matrix
+
+<FichierIntrouvable@FloatLayout>:
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: "img/_1_Accueil/FichierIntrouvable.png"
+            pos: self.pos
+            size: self.size
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+
+    Label:
+    # instruction pour l'input utilisateur
+        id:label_choix
+        text: root.text
+        size_hint: .3,.3
+        pos_hint: {"center_x":.4,"center_y":.35}
+        font_size : self.width/10
+        font_name: font_matrix
+
+    Button:
+        text: "Retour"
+        background_color: 1,0,0,0
+        size_hint: .1,.1
+        pos_hint: {"center_x": .5,"center_y":.2}
+        font_size: font_size1
+        font_name: font_matrix
+        disabled: root.b_state
+        on_press:
+            app.root.manager.current ="RootWidget"
+
+
+<ChoixFichierDecrypter@FloatLayout>:
+    ChoixFichier:
+        text: root.text
+        Button:
+    # fermer la fenêtre choix
+            text: "X"
+            background_color:
+                0,0,1,1
+            size_hint: .05, .05
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            font_name:font_matrix
+            font_size:
+            on_press:
+                app.root.ids.S4.closeBoxChoix()
+                app.root.ids.S4.b_state = False
+        TextInput:
+    # champ d'input choix fichier crypter
+            id: input_choix
+            multiline: False
+            font_name: font_matrix
+            font_size: font_size2
+            size_hint:.4,.07
+            pos_hint: {"x":.2,"y":.25}
+            on_text_validate:
+                root.objetKey = app.root.ids.S3.objetKey
+                root.decrypter(self)
+                print(root.text)
+                root.key = app.root.ids.S2.key
+                app.root.ids.S4.decryptageOk = root.decryptageOk
+                app.root.ids.S4.decrypterTerminated()
+                print("new choix Fichier ok")
+
+
+<ChoixFichierCrypter@FloatLayout>:
+    ChoixFichier:
+        text: root.text
+        Button:
+    # fermer la fenêtre choix
+            text: "X"
+            background_color:
+                0,0,1,1
+            size_hint: .05, .05
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            font_name:font_matrix
+            font_size:
+            on_press:
+                app.root.ids.S3.closeBoxChoix()
+                app.root.ids.S3.b_state = False
+        TextInput:
+    # champ d'input choix fichier crypter
+            id: input_choix
+            multiline: False
+            font_name: font_matrix
+            font_size: 20
+            size_hint:.4,.07
+            pos_hint: {"x":.2,"y":.25}
+            on_text_validate:
+                root.objetKey = app.root.ids.S3.objetKey
+                root.crypter(self)
+                print(root.text)
+                root.key = app.root.ids.S2.key
+                app.root.ids.S3.cryptageOk = root.cryptageOk
+                app.root.ids.S3.crypterTerminated()
+                print("new choix Fichier ok")
+
+<ChoixDossierdecrypter@FloatLayout>:
+    ChoixFichier: # c'est la fenêtre de base qui sert aussi bien au fichier qu'au dossier
+        text: root.text
+        Button:
+    # fermer la fenêtre choix
+            text: "X"
+            background_color:
+                0,0,1,1
+            size_hint: .05, .05
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            font_name:font_matrix
+            font_size:
+            on_press:
+                app.root.ids.S6.closeBoxChoix()
+                app.root.ids.S6.b_state = False
+        TextInput:
+    # champ d'input choix dossier decrypter
+            id: input_choix
+            multiline: False
+            font_name: font_matrix
+            font_size: font_size2
+            size_hint:.4,.07
+            pos_hint: {"x":.2,"y":.25}
+            on_text_validate:
+                root.initDirectory(self)
+                root.objetKey = app.root.ids.S3.objetKey
+                root.decrypter(self)
+                print(root.text)
+                root.key = app.root.ids.S2.key
+                app.root.ids.S6.decryptageOk = root.decryptageOk
+                app.root.ids.S6.decrypterTerminated()
+                print("new choix Fichier ok")
+
+
+<ChoixDossierCrypter@FloatLayout>:
+    ChoixFichier: # c'est la fenêtre de base qui sert aussi bien au fichier qu'au dossier
+        text: root.text
+        Button:
+    # fermer la fenêtre choix
+            text: "X"
+            background_color:
+                0,0,1,1
+            size_hint: .05, .05
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            font_name:font_matrix
+            font_size:
+            on_press:
+                app.root.ids.S5.closeBoxChoix()
+                app.root.ids.S5.b_state = False
+        TextInput:
+    # champ d'input choix dossier crypter
+            id: input_choix
+            multiline: False
+            font_name: font_matrix
+            font_size: 20
+            size_hint:.4,.07
+            pos_hint: {"x":.2,"y":.25}
+            on_text_validate:
+                root.initDirectory(self)
+                root.objetKey = app.root.ids.S3.objetKey
+                root.crypter(self)
+                print(root.text)
+                root.key = app.root.ids.S2.key
+                app.root.ids.S5.cryptageOk = root.cryptageOk
+                app.root.ids.S5.crypterTerminated()
+                print("new choix Fichier ok")
+
+<ChoixFichierClef@FloatLayout>:
+    id: choix
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_choix_fichier
+            pos: self.pos
+            size: self.size
+
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+
+# on définit une variable générale pour les coordonnées de cette layout
+#:set s .3
+ #   canvas:
+#
+ #       Color:
+  #          rgb: 1,0,0
+   #     Rectangle:
+    #        pos: self.center_x-300, self.center_y-100
+     #       size: dp(s*500), dp(s*100)
+
+
+
+    Button:
+    # fermer la fenêtre choix
+        text: "X"
+        background_color:
+            0,0,1,1
+        size_hint: .05, .05
+        #size: "1dp", "1dp"
+        pos_hint: {"center_x":.9,"center_y":.9}
+        font_name:font_matrix
+        font_size:
+        on_press:
+            app.root.ids.S2.closeBoxChoix()
+            app.root.ids.S2.b_state = False
+    Label:
+    # instruction pour l'input utilisateur
+        id:label_choix
+        text: root.text
+        size_hint: .3,.3
+        pos_hint: {"x":.22,"y":.2}
+        font_size : self.width/10
+        font_name: font_matrix
+    TextInput:
+    # champ d'input choix de clé
+        id: input_choix
+        multiline: False
+        font_name: font_matrix
+        font_size: 20
+        size_hint:.3,.07
+        pos_hint: {"x":.2,"y":.25}
+        on_text_validate:
+            root.crypterFlag = app.root.ids.S1.setcrypterflag # c'est le flag qui indique qu'il faut crypter
+            root.exclude()
+            app.root.ids.S2.exclude()
+            root.createkeyFlag = app.root.ids.S2.createkeyFlag # c'est le flag qui indique qu'il faut créer une clé
+            app.root.ids.S2.key = root.loadkeyfile(self)
+            app.root.ids.S2.closeChoixFichier()
+
+<CrypterFichier@Screen>:
+    id: S3
+    CanvasCryptage:
+    FloatLayout:
+        Button:
+            text:
+            background_color: 1,0,0,0
+            size_hint: .5,.5
+            pos_hint: {"center_x": .5,"center_y":.5}
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.initialiserChoix()
+
+        Button:
+            text: "Retour"
+            background_color: 1,0,0,0
+            size_hint: .1,.1
+            pos_hint: {"center_x": .5,"center_y":.2}
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "down"
+
+
+<CrypterDossier@Screen>:
+    id: S5
+    CanvasCryptage:
+    FloatLayout:
+        Button:
+            text:
+            background_color: 1,0,0,0
+            size_hint: .5,.5
+            pos_hint: {"center_x": .5,"center_y":.5}
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.initialiserChoix()
+
+        Button:
+            text: "Retour"
+            background_color: 1,0,0,0
+            size_hint: .1,.1
+            pos_hint: {"center_x": .5,"center_y":.2}
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "down"
+
+<DecrypterFichier@Screen>:
+    id: S4
+    CanvasDecryptage:
+    FloatLayout:
+        Button:
+            text:
+            background_color: 1,0,0,0
+            size_hint: .5,.5
+            pos_hint: {"center_x": .5,"center_y":.5}
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.initialiserChoix()
+        Button:
+            text: "Retour"
+            background_color: 1,0,0,0
+            size_hint: .1,.1
+            pos_hint: {"center_x": .5,"center_y":.2}
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "down"
+
+<DecrypterDossier@Screen>:
+    id: S6
+    CanvasDecryptage:
+    FloatLayout:
+        Button:
+            text:
+            background_color: 1,0,0,0
+            size_hint: .5,.5
+            pos_hint: {"center_x": .5,"center_y":.5}
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.initialiserChoix()
+        Button:
+            text: "Retour"
+            background_color: 1,0,0,0
+            size_hint: .1,.1
+            pos_hint: {"center_x": .5,"center_y":.2}
+            font_size: font_size1
+            font_name: font_matrix
+            disabled: root.b_state
+            on_press:
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "down"
+
+
+<Screen>:
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'img/_1_Accueil/FondEcranCrypto2.0.png'
+            pos: self.pos
+            size: self.size
+
+
+<RootWidget@Screen>:
+
+    FloatLayout:
+
+        Label:
+            markup: True
+            text: "voici la clé qui sera utilisée dans cette session:\n" + "[color=#d72f0b]"+root.key_display
+            pos_hint: {"center_x": .5,"center_y":.4}
+            font_name: font_matrix
+            font_size: font_size2
+            disabled: not root.key_state
+        Label:
+            id: label_choice
+            text: "Choisissez ce que vous voulez faire:"
+            font_size: 30
+            pos_hint:{"center_x": .5 ,"center_y":.35}
+            font_name: font_matrix
+            disabled: not root.key_state
+        Button:
+            background_color: 0,0,0,0
+            text: 'retour'
+            size_hint: .1, .05
+            pos_hint: {"center_x": .5,"center_y":.05}
+            disabled: not root.key_state
+            on_press: root.reset_key_state()
+            font_name: font_matrix
+            font_size: font_size2
+        Button:
+            id: b_load_key
+            background_color: 0,0,0,0
+            text: root.TXT_charger
+            size_hint: .2,.1
+            pos_hint: {"center_x": .50,"center_y":.50}
+            disabled: root.key_state
+            on_press: root.set_key_state(self)
+            on_press: root.loadKey()
+            font_name: font_matrix
+            font_size: font_size1
+            on_press:
+                root.b_loadkey = b_load_key
+                root.manager.current = "ChargerClef"
+                root.manager.transition.direction = "left"
+
+    BoxLayout:
+        pos_hint: {"center_x": 0.50,"center_y":.6}
+        Button:
+            id: b_crypterfichier
+            markup:True
+            text:  root.TXT_crypterfichier
+            background_color: 0,0,0,0
+            size_hint: .2, .2
+            #pos_hint: {"center_x": .20,"center_y":.2}
+            disabled: not root.key_state
+            font_name: font_matrix
+            font_size: font_size2
+            on_press:
+                app.root.ids.S3.initialiserChoix()
+                root.setcrypterflag()
+                app.root.ids.S2.crypterFlag = root.setcrypterflag()
+                root.manager.current = "CrypterFichier"
+                root.manager.transition.direction = "up"
+                print("crypter")
+
+        Button:
+            text: 'Crypter un dossier'
+            background_color: 0,0,0,0
+            size_hint: .2, .2
+            #pos_hint: {"center_x": .4,"center_y":.2}
+            disabled: not root.key_state
+            font_name: font_matrix
+            font_size: font_size2
+            on_press:
+                app.root.ids.S5.initialiserChoix()
+                root.setcrypterflag()
+                app.root.ids.S2.crypterFlag = root.setcrypterflag()
+                root.manager.current = "CrypterDossier"
+                root.manager.transition.direction = "up"
+                print("crypter dossier")
+        Button:
+            text: 'Decrypter un fichier'
+            background_color: 0,0,0,0
+            size_hint: .2, .2
+            #pos_hint: {"center_x": .6,"center_y":.2}
+            disabled: not root.key_state
+            font_name: font_matrix
+            font_size: font_size2
+            on_press:
+                app.root.ids.S4.initialiserChoix()
+                root.setcrypterflag()
+                app.root.ids.S2.crypterFlag = root.setcrypterflag()
+                root.manager.current = "DecrypterFichier"
+                root.manager.transition.direction = "up"
+                print("decrypter")
+
+        Button:
+            text: 'Decrypter un dossier'
+            background_color: 0,0,0,0
+            size_hint: .2, .2
+            #pos_hint: {"center_x": .8,"center_y":.2}
+            disabled: not root.key_state
+            font_name: font_matrix
+            font_size: font_size2
+            on_press:
+                app.root.ids.S6.initialiserChoix()
+                root.setcrypterflag()
+                app.root.ids.S2.crypterFlag = root.setcrypterflag()
+                root.manager.current = "DecrypterDossier"
+                root.manager.transition.direction = "up"
+                print("decrypter dossier")
+
+
+<ScreenManager>:
+    # c'est ici que les classes Screen s'échangent des données
+    id: My_SM
+    RootWidget:
+        id: S1
+        name: "RootWidget"
+        manager: My_SM
+        key_display: S2.key
+    ChargerClef:
+        id: S2
+        name: "ChargerClef"
+        manager: My_SM
+    CrypterFichier:
+        id: S3
+        name: "CrypterFichier"
+        manager: My_SM
+        key: S2.key
+        objetKey:S2.loadedkey
+        cryptageOk:
+    DecrypterFichier:
+        id: S4
+        name: "DecrypterFichier"
+        manager: My_SM
+        key: S2.key
+        objetKey:S2.loadedkey
+        decryptageOk:
+    CrypterDossier:
+        id: S5
+        name: "CrypterDossier"
+        manager: My_SM
+        key: S2.key
+        objetKey:S2.loadedkey
+        cryptageOk:
+    DecrypterDossier:
+        id: S6
+        name: "DecrypterDossier"
+        manager: My_SM
+        key: S2.key
+        objetKey:S2.loadedkey
+        decryptageOk:

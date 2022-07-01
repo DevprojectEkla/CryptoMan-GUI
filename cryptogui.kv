@@ -1,0 +1,1090 @@
+# Ce fichier doit porter le même nom que la class qui initialise l'application class Name(App): mais l'usage est
+# de ne pas utiliser de majuscule donc tout sauf la case.
+
+# Fonts disponibles: "Fonts\\arial.ttf", "Fonts\\courbd.ttf", "Fonts\\cour.ttf", "Fonts\\Cryptography.ttf" ; "Fonts\\matrix regular.ttf"
+# images disponibles: 'img/IconeCryptoMan.png'
+# ici on initialise des variables générales
+#:set font_titre "Fonts\\matrix regular.ttf"
+#:set font_input "Fonts\\lucon.ttf"
+#:set font_matrix "Fonts\\matrix regular.ttf"
+#:set font_window "Fonts\\arial.ttf"
+#:set font_size1 "30dp"
+#:set font_size2 "20dp"
+#:set font_size3 "25dp"
+
+# variable pour le champ input de choix fichier
+#:set BGcolor_input 0,0,0,1
+#:set FGcolor_input 0.3, 0.7, 0.5, 1
+#:set FGColor_introuvable 0.9,0.3,0.3,1
+#:set BGColor_introuvable 0,0,0,1
+
+# variable pour la couleur du Label du TextInput dans ChoixFichier:
+#:set Label_color 0.3, 0.7, 0.5, 1
+
+# variable pour le canvas du Label fichier ou dossier introuvable
+#:set rect_width_introuvable 250
+#:set rect_height_introuvable 50
+
+
+#:set img_choix_fichier 'img/NouveauchoixFichierSimple.png'
+#:set img_ask_overwrite 'img/IconeCryptoMan.png'
+#:set img_fichier_introuvable 'img/FichierIntrouvable.png'
+#:set img_chargement 'img/barre de chargement.png'
+#:set img_popup_decrypter 'img/cadenasOuvert.png'
+#:set img_popup_crypter 'img/cadenasferme.png'
+#:set img_reduce_window 'img/window_reduire.png'
+#:set img_minimize 'img/minimize.png'
+#:set img_croix 'img/croix.png'
+
+
+#:set msg_file_crypted "Le fichier a bien été crypté"
+#:set msg_file_decrypted "Le fichier a bien été décrypté"
+#:set msg_dir_crypted "Le dossier a bien été crypté"
+#:set msg_dir_decrypted "Le dossier a bien été décrypté"
+
+# RootWidget est la class de notre menu principal on doit l'appeler ici au début du
+# fichier .kv sans aucun signe "<>". Ces signes servent à définir des classes pour le fichier .kv
+
+# affichage de l'écran principal.
+RootWidget:
+
+# ici on définit des canvas pour notre appli:
+
+
+
+# CANVAS
+
+<CanvasKey@FloatLayout>
+    canvas:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'img/_1_Accueil/FondEcranChargerClef.png'
+            size: self.size
+
+<CanvasOverwrite@FloatLayout>
+    canvas:
+        BorderImage:
+            border: 10, 10, 10, 10
+            size: self.size
+            pos:self.pos
+
+<CanvasCryptage@FloatLayout>
+    canvas:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'img/_1_Accueil/FondEcranCryptage.png'
+            size: self.size
+
+<CanvasDecryptage@FloatLayout>
+    canvas:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'img/_1_Accueil/FondEcranDecrypter.png'
+            size: self.size
+
+<CanvasChargement@FloatLayout>
+    canvas:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_chargement
+            size: self.size
+
+# BARRE FENETRE: barre de la fenêtre avec boutons fermé et réduire
+<MoveWindow@Button>:
+    text: "-"
+    background_color:1,0,0,1
+    size_hint: 1, .05
+    pos_hint: {"left":1,"top":1}
+    font_name: font_window
+    font_size: "30dp"
+
+
+
+<WindowBar>:
+    id:WinBar
+    size_hint: .3, .3
+    pos_hint: {"right":1, "top":.98} # permet de déplacer la box entière des trois boutons
+    canvas.before:
+        Color:
+            rgba: 0,0,0,1
+        Rectangle:
+            size: 1900,50
+            pos: self.x-root.width*3,self.y+self.height-17
+
+    BoxLayout:
+        #spacing: "15dp" pour ajouter de l'espace entre les boutons, inutile ici mais bon à savoir
+        size_hint: 1, 1 # si cette taille est trop réduite les boutons ne fonctionne plus
+       # pos_hint: # ne rien mettre ici c'est inutile et cela peut tout chambouler
+
+        Button:
+            id: minimize
+            canvas:
+                BorderImage:
+                    border:
+                    source: img_minimize
+                    size: 30, 30
+                    pos: self.center_x-10, self.center_y-10
+            text: "-"
+            background_color:0,0,0,.5
+            size_hint: 1, .3
+            pos_hint: {"center_x":.85,"center_y":1}
+            font_name: font_window
+            font_size: "30dp"
+            on_press:
+                app.root.ids.S1.minimize()
+        Button:
+            id: b_reduce_size
+            canvas:
+                BorderImage:
+                    border:
+                    source: root.img
+                    size: 20, 20
+                    pos: self.center_x-10, self.center_y-10
+            text:""
+            background_color:0,0,0,.5
+            size_hint: 1, .3
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.92,"center_y":1}
+            on_press:
+                root.change_img_window()
+                app.root.ids.S1.reduce_size()
+
+        Button:
+            id:close
+            text: ""
+            canvas:
+                BorderImage:
+                    border:
+                    source: img_croix
+                    size: 25, 25
+                    pos: self.center_x-5, self.center_y-10
+            background_color:0,0,0,1
+            size_hint: 1, .3
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.94,"center_y":.99}
+            font_name: font_window
+            font_size:
+            on_press:
+                app.root.ids.S1.close()
+
+# POPUP PERSO
+
+<MyPopUp@Popup>:
+
+    id: pop
+    background_normal: ""
+    background_color: 0,0,0,0
+    title_font: font_matrix
+    title_size: 30
+    title_pos: self.center_x, self.center_y
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: app.root.ids.S1.img_popup
+            size: self.size
+            pos: self.pos
+
+    GridLayout:
+        cols: 1
+        size_hint: 1,1
+        pos_hint: {"center_x":.5,"center_y":.5}
+
+        Label:
+            background_color: 0,0,0,0
+            text : app.root.ids.S1.msg_popup
+            label_size: 20
+
+            size: pop.size
+            pos: pop.pos
+            font_size: font_size1
+            font_name: font_matrix
+
+        Button:
+
+            text: "Retour"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_titre
+            size: pop.size
+            pos: pop.center_x-0.3*pop.center_x, pop.center_y-0.3*pop.center_x
+            disabled:
+            on_press: pop.dismiss()
+
+
+
+# première class d'affichage importante @screen renvoit donc à l'héritage de la class Screen qui génére
+# un écran distinct de l'écran principal
+
+
+# SCREEN 2
+# CHARGER CLEF
+#: set COLOR_canvas_KEY [.1,.2,.1,.9]
+<ChargerClef@Screen>:
+    id:load_key_layout
+    CanvasKey:
+    WindowBar:
+    GridLayout:
+        id:load_key_layout
+        cols: 1
+        size_hint: .72,.3
+        pos_hint: {"center_x":.5,"center_y":.5}
+        Button:
+            text: "Charger le fichier 'secret.key' depuis le current working directory"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                app.root.ids.S1.sound_choix.play()
+                app.root.ids.S1.canvas_KEY = COLOR_canvas_KEY
+                app.root.ids.S1.keyloaded()
+                root.loadkey()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "right"
+        Button:
+            text: "Charger un autre fichier clé"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                root.init_audio()
+                app.root.ids.S1.canvas_KEY = COLOR_canvas_KEY
+                root.b_state = True
+                root.createkeyFlag = False
+                root.chooseFile()
+        Button:
+            text: "Générer une nouvelle clé et l'enregister sous un nouveau nom"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                root.init_audio()
+                app.root.ids.S1.canvas_KEY = COLOR_canvas_KEY
+                root.b_state = True
+                root.createkeyFlag = True
+                root.chooseFile()
+        Button:
+            text: "Retour"
+            background_color: 0,0,0,0
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                app.root.ids.S1.sound_retour.play()
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "right"
+
+# CHARGEMENT:
+
+<MyProgressBar@FloatLayout>:
+    CanvasChargement:
+    ProgressBar:
+        max: 100
+
+
+# CHOIX FICHIER
+
+# On instancie tous nos affichage concernant le choix des fichiers
+<ChoixFichier@FloatLayout>:
+    id: choix
+    # écran de fond générer dans l'écran avant la Layout
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_choix_fichier
+            pos: self.pos
+            size: self.size
+    # position et dimension de la Layout
+
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+
+    Label:
+    # instruction pour l'input utilisateur
+        id:label_choix_fichier
+        text: root.text
+        color: Label_color
+        size_hint: .3,.3
+        pos_hint: {"center_x":.4,"center_y":.35}
+        font_size : self.width/10
+        font_name: font_titre
+
+
+# ON SCREEN 2
+# CHOIX FICHIER CLEF
+
+<ChoixFichierClef@FloatLayout>:
+    id: choix
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_choix_fichier
+            pos: self.pos
+            size: self.size
+
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+
+    Button:
+    # fermer la fenêtre choix
+        text: "X"
+        background_color:
+            0,0,1,1
+        size_hint: .05, .05
+        #size: "1dp", "1dp"
+        pos_hint: {"center_x":.9,"center_y":.9}
+        font_name:font_titre
+        font_size:
+        on_press:
+            app.root.ids.S2.closeBoxChoix()
+            app.root.ids.S2.b_state = False
+    Label:
+    # instruction pour l'input utilisateur
+        id:label_choix_fichier_clef
+        text: root.text
+        color:root.Label_color
+        size_hint: .3,.3
+        pos_hint: {"x":.22,"y":.2}
+        font_size : self.width/10
+        font_name: font_titre
+    TextInput:
+    # champ d'input choix de clé
+        id: input_choix
+        foreground_color: FGcolor_input
+        background_color: BGcolor_input
+        multiline: False
+        font_name: font_input
+        font_size: 20
+        size_hint:.3,.07
+        pos_hint: {"x":.2,"y":.25}
+        on_text_validate:
+            root.crypterFlag = app.root.ids.S1.setcrypterflag # c'est un flag qui indiquait qu'il fallait crypter ou pas
+            # dans une ancienne version de l'appli où choixfichier était commun à plusieurs opérations.TODO: A supprimer
+            root.exclude() # idem TODO: A supprimer
+            app.root.ids.S2.exclude()
+            root.createkeyFlag = app.root.ids.S2.createkeyFlag # c'est le flag qui indique qu'il faut créer une clé
+            app.root.ids.S2.key = root.loadkeyfile(self)
+            app.root.ids.S2.closeChoixFichier()
+
+
+# FICHIER INTROUVABLE
+
+<FichierIntrouvable@FloatLayout>:
+
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_fichier_introuvable
+            pos: self.pos
+            size: self.size
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+    Label:
+        canvas.before:
+            Color:
+                rgba: BGColor_introuvable
+            Rectangle:
+                size: rect_width_introuvable, rect_height_introuvable
+                pos: self.center_x-rect_width_introuvable/2, self.center_y-rect_height_introuvable/2
+
+        text: "Fichier introuvable"
+        color: FGColor_introuvable
+        font_name: font_titre
+        font_size: font_size1
+        size_hint: .5,.5
+        pos_hint: {"center_x":.5,"center_y":.7}
+
+    Button:
+        text: "Retour"
+        background_color: 0,0,0,0
+        size_hint: .3,.3
+        pos_hint: {"center_x": .5,"center_y":.3}
+        font_size: font_size1
+        font_name: font_titre
+        disabled:
+        on_press:
+            app.root.ids.S1.sound_retour.play()
+            app.root.ids.S3.b_state = False
+            app.root.ids.S3.closeBoxChoix()
+
+# DOSSIER INTROUVABLE
+
+<DossierIntrouvable@FloatLayout>:
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_fichier_introuvable
+            pos: self.pos
+            size: self.size
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+    Label:
+        canvas.before:
+            Color:
+                rgba: BGColor_introuvable
+            Rectangle:
+                size: rect_width_introuvable, rect_height_introuvable
+                pos: self.center_x-rect_width_introuvable/2, self.center_y-rect_height_introuvable/2
+        text: "Dossier introuvable"
+        color: FGColor_introuvable
+        font_name: font_titre
+        font_size: font_size1
+        size_hint: .5,.5
+        pos_hint: {"center_x":.5,"center_y":.7}
+
+    Button:
+        text: "Retour"
+        background_color: 0,0,0,0
+        size_hint: .3,.3
+        pos_hint: {"center_x": .5,"center_y":.3}
+        font_size: font_size1
+        font_name: font_titre
+        disabled:
+        on_press:
+            app.root.ids.S1.sound_retour.play()
+            app.root.ids.S6.b_state = False
+            app.root.ids.S6.closeBoxChoix()
+
+
+# ON SCREEN 3
+# ASKOVERWRITE CRYPTER
+
+<AskOverwriteCrypter@FloatLayout>:
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_ask_overwrite
+            pos: self.pos
+            size: self.size
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+
+    Label:
+    #:set d 0.5
+        size_hint: 0.7, 0.7
+        pos_hint: {"center_x":.5,"center_y":.5}
+        text: root.text
+        font_size: "25dp"
+        font_name: font_titre
+        canvas.before:
+            Color:
+                rgba: 0,0,0,.9
+            Rectangle:
+                #size: self.texture_size pour avoir la taille exacte du texte
+                size: self.texture_size
+                pos: self.center_x-250, self.center_y-15
+    Button:
+        text: "OUI"
+        background_color: 0,0,0,.9
+        size_hint: .1,.1
+        pos_hint: {"center_x":.4,"center_y":.4}
+        on_press:
+            root.file = app.root.ids.S3.file
+            root.cryptfile = app.root.ids.S3.existingfile
+            root.objetKey = app.root.ids.S3.objetKey
+            root.overwrite = True
+            root.ecraserFichier()
+            app.root.ids.S3.b_state = False
+            app.root.ids.S3.cryptageOK = root.cryptageOK
+            app.root.ids.S3.crypterTerminated()
+    Button:
+        text: "NON"
+        background_color: 0,0,0,.9
+        size_hint: .1,.1
+        pos_hint: {"center_x":.6,"center_y":.4}
+        on_press:
+            root.overwrite = False
+            app.root.ids.S3.b_state = False
+            app.root.ids.S3.closeBoxChoix()
+
+# ON SCREEN 4
+# ASKOVERWRITE DECRYPTER
+
+<AskOverwriteDecrypter@FloatLayout>:
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: img_ask_overwrite
+            pos: self.pos
+            size: self.size
+    size_hint: .5,.5
+    pos_hint: {"center_x":.5,"center_y":.5}
+
+    Label:
+    #:set d 0.5
+        size_hint: 0.7, 0.7
+        pos_hint: {"center_x":.5,"center_y":.5}
+        text: root.text
+        font_size: "25dp"
+        font_name: font_titre
+        canvas.before:
+            Color:
+                rgba: 0,0,0,.9
+            Rectangle:
+                #size: self.texture_size pour avoir la taille exacte du texte
+                size: self.texture_size
+                pos: self.center_x-250, self.center_y-15
+    Button:
+        text: "OUI"
+        background_color: 0,0,0,.9
+        size_hint: .1,.1
+        pos_hint: {"center_x":.4,"center_y":.4}
+        on_press:
+            root.sound_decryption = app.root.ids.S4.sound_decryption
+            root.thread_sound_decryption = app.root.ids.S4.thread_sound_decryption
+            root.file = app.root.ids.S4.file
+            root.decryptfile = app.root.ids.S4.existingfile
+            root.objetKey = app.root.ids.S4.objetKey
+            root.overwrite = True
+            root.ecraserFichier()
+            app.root.ids.S4.b_state = False
+            app.root.ids.S4.decryptageOK = root.decryptageOK
+            app.root.ids.S4.askoverwrite = root.askoverwrite
+            app.root.ids.S4.decrypterTerminated()
+    Button:
+        text: "NON"
+        background_color: 0,0,0,.9
+        size_hint: .1,.1
+        pos_hint: {"center_x":.6,"center_y":.4}
+        on_press:
+            root.askoverwrite = False
+            app.root.ids.S4.askoverwrite = root.askoverwrite
+            app.root.ids.S4.b_state = False
+            app.root.ids.S4.closeBoxChoix()
+
+
+# SCREEN 3
+# CRYPTER FICHIER
+
+<CrypterFichier@Screen>:
+    id: S3
+    CanvasCryptage:
+    WindowBar:
+    FloatLayout:
+        Button: # ce bouton est transparent mais il englobe en réalité toute l'image du cadenas
+        # un clik sur l'image initialise un choix fichier
+            text:
+            background_color: 1,0,0,0
+            size_hint: .5,.5
+            pos_hint: {"center_x": .5,"center_y":.5}
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                root.initialiserChoix()
+
+        Button:
+            text: "Retour"
+            background_color: 1,0,0,0
+            size_hint: .1,.1
+            pos_hint: {"center_x": .5,"center_y":.2}
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                app.root.ids.S1.sound_retour.play()
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "down"
+
+# ON SCREEN 3
+# CHOIX FICHIER CRYPTER
+
+<ChoixFichierCrypter@FloatLayout>:
+    id: choix_crypter
+    ChoixFichier:
+        text: root.text
+        Button:
+    # fermer la fenêtre choix
+            text: "X"
+            background_color:
+                0,0,1,1
+            size_hint: .05, .05
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            font_name:font_titre
+            font_size:
+            on_press:
+                app.root.ids.S3.closeBoxChoix()
+                app.root.ids.S3.b_state = False
+        TextInput:
+    # champ d'input choix fichier crypter
+            id: input_choix
+            multiline: False
+            foreground_color: FGcolor_input
+            background_color: BGcolor_input
+            font_name: font_input
+            font_size: 20
+            size_hint:.4,.07
+            pos_hint: {"x":.2,"y":.25}
+            on_text_validate:
+                root.init_audio()
+                root.thread_sound_enter.start()
+                root.objetKey = app.root.ids.S3.objetKey
+                root.setFile(self)
+                root.crypter(self)
+                print(root.text)
+                root.key = app.root.ids.S2.key
+                app.root.ids.S3.file = root.file
+                app.root.ids.S3.existingfile = root.cryptfile
+                app.root.ids.S3.askoverwrite = root.askoverwrite # on vérifie si l'utilisateur demande d'écraser un fichier
+                app.root.ids.S3.askOverwrite()
+                app.root.ids.S3.cryptageOK = root.cryptageOK #on signale si l'opération de cryptage a réussi
+                app.root.ids.S3.f_introuvable = root.f_introuvable  # on bind le flag de fichier introuvable avec S3
+                app.root.ids.S3.crypterTerminated()
+                app.root.ids.S3.b_state = root.b_state
+                print("new choix Fichier ok")
+
+
+# SCREEN 5
+# CRYPTER DOSSIER
+
+<CrypterDossier@Screen>:
+    id: S5
+    CanvasCryptage:
+    WindowBar:
+    FloatLayout:
+        Button:
+            text:
+            background_color: 1,0,0,0
+            size_hint: .5,.5
+            pos_hint: {"center_x": .5,"center_y":.5}
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                root.initialiserChoix()
+
+        Button:
+            text: "Retour"
+            background_color: 1,0,0,0
+            size_hint: .1,.1
+            pos_hint: {"center_x": .5,"center_y":.2}
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                app.root.ids.S1.sound_retour.play()
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "down"
+
+# ON SCREEN 5
+# CHOIX CRYPTER DOSSIER
+
+<ChoixDossierCrypter@FloatLayout>:
+    ChoixFichier: # c'est la fenêtre de base qui sert aussi bien au fichier qu'au dossier
+        text: root.text
+        Button:
+    # fermer la fenêtre choix
+            text: "X"
+            background_color:
+                0,0,1,1
+            size_hint: .05, .05
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            font_name:font_titre
+            font_size:
+            on_press:
+                app.root.ids.S5.closeBoxChoix()
+                app.root.ids.S5.b_state = False
+        TextInput:
+    # champ d'input choix dossier crypter
+            id: input_choix
+            multiline: False
+            background_color: BGcolor_input
+            foreground_color: FGcolor_input
+            font_name: font_input
+            font_size: font_size2
+            size_hint:.4,.07
+            pos_hint: {"x":.2,"y":.25}
+            on_text_validate:
+                root.init_audio()
+                root.initDirectory(self)
+                app.root.ids.S5.initOK = root.initOK
+                app.root.ids.S5.afficherProgressBar()
+                root.objetKey = app.root.ids.S3.objetKey
+                root.crypter()
+                app.root.ids.S5.cryptageOK = root.cryptageOK
+                app.root.ids.S5.d_introuvable = root.d_introuvable
+                app.root.ids.S5.b_state = root.b_state
+                print(root.text)
+                root.key = app.root.ids.S2.key # complétement inutile a priori
+                app.root.ids.S5.crypterTerminated()
+                print("new choix Fichier ok")
+
+
+# SCREEN 4
+# DECRYPTER FICHIER
+
+<DecrypterFichier@Screen>:
+    id: S4
+    CanvasDecryptage:
+    WindowBar:
+    FloatLayout:
+        Button:
+            text:
+            background_color: 1,0,0,0
+            size_hint: .5,.5
+            pos_hint: {"center_x": .5,"center_y":.5}
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                root.initialiserChoix()
+        Button:
+            text: "Retour"
+            background_color: 1,0,0,0
+            size_hint: .1,.1
+            pos_hint: {"center_x": .5,"center_y":.2}
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                app.root.ids.S1.sound_retour.play()
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "down"
+
+# ON SCREEN 4
+#CHOIX FICHIER DECRYPTER
+
+<ChoixFichierDecrypter@FloatLayout>:
+    ChoixFichier:
+        text: root.text
+        Button:
+    # fermer la fenêtre choix
+            text: "X"
+            background_color: 0,0,1,1
+            size_hint: .05, .05
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            font_name:font_titre
+            font_size:
+            on_press:
+                app.root.ids.S4.closeBoxChoix()
+                app.root.ids.S4.b_state = False
+        TextInput:
+    # champ d'input choix fichier decrypter
+            id: input_choix
+            multiline: False
+            background_color: BGcolor_input
+            foreground_color: FGcolor_input
+            font_name: font_input
+            font_size: font_size2
+            size_hint:.4,.1
+            pos_hint: {"x":.2,"y":.2}
+            on_text_validate:
+                root.init_audio()
+                root.thread_sound_enter.start()
+                print(root.text)
+                root.setFile(self)
+                root.objetKey = app.root.ids.S4.objetKey
+                root.decrypter(self)
+                app.root.ids.S4.file = root.file
+                app.root.ids.S4.existingfile = root.decryptfile
+                app.root.ids.S4.askoverwrite = root.askoverwrite # on vérifie si l'utilisateur demande d'écraser un fichier
+                app.root.ids.S4.askOverwrite()
+                root.key = app.root.ids.S2.key
+                app.root.ids.S4.decryptageOK = root.decryptageOK
+                app.root.ids.S4.f_introuvable = root.f_introuvable  # on bind le flag de fichier introuvable avec S3
+                app.root.ids.S4.decrypterTerminated()
+                app.root.ids.S4.b_state = root.b_state
+                print("new choix Fichier ok")
+
+# SCREEN 6
+# DECRYPTER DOSSIER
+
+<DecrypterDossier@Screen>:
+    id: S6
+    CanvasDecryptage:
+    WindowBar:
+    FloatLayout:
+        Button:
+            text:
+            background_color: 1,0,0,0
+            size_hint: .5,.5
+            pos_hint: {"center_x": .5,"center_y":.5}
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                root.initialiserChoix()
+        Button:
+            text: "Retour"
+            background_color: 1,0,0,0
+            size_hint: .1,.1
+            pos_hint: {"center_x": .5,"center_y":.2}
+            font_size: font_size1
+            font_name: font_titre
+            disabled: root.b_state
+            on_press:
+                app.root.ids.S1.sound_retour.play()
+                root.returnMenu()
+                root.manager.current = "RootWidget"
+                root.manager.transition.direction = "down"
+
+# SCREEN 6
+# CHOIX DECRYPTER DOSSIER
+
+<ChoixDossierdecrypter@FloatLayout>:
+    ChoixFichier: # c'est la fenêtre de base qui sert aussi bien au fichier qu'au dossier
+        text: root.text
+        Button:
+    # fermer la fenêtre choix
+            text: "X"
+            background_color:
+                0,0,1,1
+            size_hint: .05, .05
+            #size: "1dp", "1dp"
+            pos_hint: {"center_x":.9,"center_y":.9}
+            font_name:font_titre
+            font_size:
+            on_press:
+                app.root.ids.S6.closeBoxChoix()
+                app.root.ids.S6.b_state = False
+        TextInput:
+    # champ d'input choix dossier decrypter
+            id: input_choix
+            multiline: False
+            background_color: BGcolor_input
+            foreground_color: FGcolor_input
+            font_name: font_input
+            font_size: font_size2
+            size_hint:.4,.1
+            pos_hint: {"x":.19,"y":.22}
+            on_text_validate:
+                root.init_audio()
+                root.initDirectory(self)
+                root.objetKey = app.root.ids.S3.objetKey
+                root.decrypter()
+                print(root.text)
+                root.key = app.root.ids.S2.key
+                app.root.ids.S6.decryptageOK = root.decryptageOK
+                app.root.ids.S6.d_introuvable = root.d_introuvable
+                app.root.ids.S6.b_state = root.b_state
+                app.root.ids.S6.decrypterTerminated()
+                print("new choix Fichier ok")
+
+
+
+
+<Screen>:
+    canvas.before:
+        BorderImage:
+            border: 10, 10, 10, 10
+            source: 'img/_1_Accueil/FondEcranCrypto2.0.png'
+            pos: self.pos
+            size: self.size
+
+# Definition de l'écran de notre menu principal
+
+# MAIN SCREEN ROOTWIDGET
+
+<RootWidget@Screen>:
+#: set rect_width 555
+#: set rect_height 70
+#: set font_size3 25
+
+    FloatLayout:
+        MoveWindow:
+        WindowBar:
+        Label:
+            canvas.before:
+                Color:
+                    rgba: root.canvas_KEY
+                Rectangle:
+                    size: rect_width, rect_height
+                    pos: self.center_x-rect_width/2, self.center_y-rect_height/2
+
+            #background_color: 1,0,0,1 NON PAS POUR UN LABEL IL FAUT UTILISER UN CANVAS
+            markup: True
+            text: "voici la clé qui sera utilisée dans cette session:\n" +"[color=#d72f0b]"+"[b]"+root.key_display+"[/b]"
+            pos_hint: {"center_x": .5,"center_y":.45}
+            font_name: font_titre
+            font_size: font_size3
+            disabled: not root.key_state
+        Label:
+            id: label_choice
+            text: "Choisissez ce que vous voulez faire:"
+            font_size: 30
+            pos_hint:{"center_x": .5 ,"center_y":.35}
+            font_name: font_titre
+            disabled: not root.key_state
+        Button:
+            background_color: 0,0,0,0
+            text: 'retour'
+            size_hint: .1, .05
+            pos_hint: {"center_x": .5,"center_y":.15}
+            disabled: not root.key_state
+            on_press: root.reset_key_state()
+            font_name: font_titre
+            font_size: font_size3
+        Button:
+            id: b_load_key
+            background_color: 0,0,0,0
+            text: root.TXT_charger
+            size_hint: .2,.1
+            pos_hint: {"center_x": .50,"center_y":.55}
+            disabled: root.key_state
+            on_press: root.set_key_state(self)
+            on_press: root.loadKey()
+            font_name: font_titre
+            font_size: font_size1
+            on_press:
+                root.sound_key_maker.play()
+                root.b_loadkey = b_load_key
+                root.manager.current = "ChargerClef"
+                root.manager.transition.direction = "left"
+
+    BoxLayout:
+        pos_hint: {"center_x": 0.50,"center_y":.7}
+        Button:
+            id: b_crypterfichier
+            markup:True
+            text:  root.TXT_crypterfichier
+            background_color: 0,0,0,0
+            size_hint: .1, .1
+            #pos_hint: {"center_x": .20,"center_y":.25}
+            disabled: not root.key_state
+            font_name: font_titre
+            font_size: font_size3
+            on_press:
+                root.sound_choix_fichier2.play()
+                app.root.ids.S1.msg_popup = msg_file_crypted
+                app.root.ids.S1.img_popup = img_popup_crypter
+                app.root.ids.S3.initialiserChoix()
+                root.setcrypterflag()
+                app.root.ids.S2.crypterFlag = root.setcrypterflag()
+                root.manager.current = "CrypterFichier"
+                root.manager.transition.direction = "up"
+                print("crypter")
+
+        Button:
+            text: 'Crypter un dossier'
+            background_color: 0,0,0,0
+            size_hint: .1, .1
+            #pos_hint: {"center_x": .4,"center_y":.25}
+            disabled: not root.key_state
+            font_name: font_titre
+            font_size: font_size3
+            on_press:
+                root.sound_choix_fichier2.play()
+                app.root.ids.S1.msg_popup = msg_dir_crypted
+                app.root.ids.S1.img_popup = img_popup_crypter
+                app.root.ids.S5.initialiserChoix()
+                root.setcrypterflag()
+                app.root.ids.S2.crypterFlag = root.setcrypterflag()
+                root.manager.current = "CrypterDossier"
+                root.manager.transition.direction = "up"
+                print("crypter dossier")
+        Button:
+            text: 'Decrypter un fichier'
+            background_color: 0,0,0,0
+            size_hint: .1, .1
+            #pos_hint: {"center_x": .6,"center_y":.25}
+            disabled: not root.key_state
+            font_name: font_titre
+            font_size: font_size3
+            on_press:
+                root.sound_choix_fichier2.play()
+                app.root.ids.S1.msg_popup = msg_file_decrypted
+                app.root.ids.S1.img_popup = img_popup_decrypter
+                app.root.ids.S4.initialiserChoix()
+                root.setcrypterflag()
+                app.root.ids.S2.crypterFlag = root.setcrypterflag()
+                root.manager.current = "DecrypterFichier"
+                root.manager.transition.direction = "up"
+                print("decrypter")
+
+        Button:
+            text: 'Decrypter un dossier'
+            background_color: 0,0,0,0
+            size_hint: .1, .1
+            #pos_hint: {"center_x": .8,"center_y":.25}
+            disabled: not root.key_state
+            font_name: font_titre
+            font_size: font_size3
+            on_press:
+                root.sound_choix_fichier2.play()
+                app.root.ids.S1.msg_popup = msg_dir_decrypted
+                app.root.ids.S1.img_popup = img_popup_decrypter
+                app.root.ids.S6.initialiserChoix()
+                root.setcrypterflag()
+                app.root.ids.S2.crypterFlag = root.setcrypterflag()
+                root.manager.current = "DecrypterDossier"
+                root.manager.transition.direction = "up"
+                print("decrypter dossier")
+
+# Le centre de contrôle de l'affichage
+<ScreenManager>:
+    # c'est ici que les classes Screen s'échangent des données
+    id: My_SM
+    RootWidget:
+        id: S1
+        name: "RootWidget"
+        manager: My_SM
+        key_display: S2.key
+        init: S1.init_audio()
+    ChargerClef:
+        id: S2
+        name: "ChargerClef"
+        manager: My_SM
+    CrypterFichier:
+        id: S3
+        name: "CrypterFichier"
+        manager: My_SM
+        key: S2.key
+        objetKey:S2.loadedkey
+        cryptageOK:
+    DecrypterFichier:
+        id: S4
+        name: "DecrypterFichier"
+        manager: My_SM
+        key: S2.key
+        objetKey:S2.loadedkey
+        decryptageOK:
+    CrypterDossier:
+        id: S5
+        name: "CrypterDossier"
+        manager: My_SM
+        key: S2.key
+        objetKey:S2.loadedkey
+        cryptageOK:
+    DecrypterDossier:
+        id: S6
+        name: "DecrypterDossier"
+        manager: My_SM
+        key: S2.key
+        objetKey:S2.loadedkey
+        decryptageOK:
+
+
+# pas utilisé pour l'instant
+#<MyPopup@Popup>:
+ #   canvas.after:
+  #      BorderImage:
+   #         border: 10, 10, 10, 10
+    #        source: img_popup
+     #       pos: self.pos
+      #      size: self.size
+    #title: root.title
+
+
+# exemple de figure géométrique sur un canvas
+#:set s .3
+ #   canvas:
+#
+ #       Color:
+  #          rgb: 1,0,0
+   #     Rectangle:
+    #        pos: self.center_x-300, self.center_y-100
+     #       size: dp(s*500), dp(s*100)
+
+
+
+
+

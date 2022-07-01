@@ -1,0 +1,3 @@
+ERREUR FICHIER INTROUVABLE:
+Erreur, le fichier test.txt n'existe pas.
+ Ce fichier Error.txt est généré automatiquementlors d'un tentative de cryptage ou de décryptage d'un fichierdont le chemin d'accès n'a pas été reconnu comme valide
