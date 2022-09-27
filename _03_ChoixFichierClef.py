@@ -18,7 +18,7 @@ class ChoixFichierClef(FloatLayout):
 
     def exclude(self):
         if self.crypterFlag:
-            self.createkeyFlag = False
+            self.createkeyFlag = True
         else:
             pass
 
@@ -33,8 +33,6 @@ class ChoixFichierClef(FloatLayout):
             else:
                 self.Label_color = (0.9, .3, .3, 1)
                 self.text = "fichier non valide"
-
-
         else:
             key = self.algo.creationNouveauFichierGUI(widget.text)
             if key:
@@ -42,7 +40,7 @@ class ChoixFichierClef(FloatLayout):
                 print(f"objetkey: {self.objetKey} et la clé est: {self.objetKey.key}")
                 self.key = str(key.key)
             else:
-                self.text = "fichier non valide"
+                self.text = "Trying generating new key file Failed"
         return self.key
 
     def crypter(self):

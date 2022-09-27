@@ -8,7 +8,7 @@ from _03_ChoixFichierClef import ChoixFichierClef
 
 
 class ChargerClef(Screen):
-    """Classe pour la fenêtre de chargement du fichier .keyr"""
+    """Classe pour la fenêtre de chargement du fichier .key"""
     b_state = BooleanProperty(False)
     algo = AlgoG()
     loadedkey = ObjectProperty(Key())

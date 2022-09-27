@@ -92,7 +92,7 @@ RootWidget:
 # BARRE FENETRE: barre de la fenêtre avec boutons fermé et réduire
 <MoveWindow@Button>:
     text: "-"
-    background_color:1,0,0,1
+    background_color:0,0,0,0
     size_hint: 1, .05
     pos_hint: {"left":1,"top":1}
     font_name: font_window
@@ -264,7 +264,7 @@ RootWidget:
                 app.root.ids.S1.canvas_KEY = COLOR_canvas_KEY
                 root.b_state = True
                 root.createkeyFlag = True
-                root.chooseFile()
+                root.chooseFile() #lance ChoixFichierClef
         Button:
             text: "Retour"
             background_color: 0,0,0,0
@@ -364,7 +364,7 @@ RootWidget:
             root.crypterFlag = app.root.ids.S1.setcrypterflag # c'est un flag qui indiquait qu'il fallait crypter ou pas
             # dans une ancienne version de l'appli où choixfichier était commun à plusieurs opérations.TODO: A supprimer
             root.exclude() # idem TODO: A supprimer
-            app.root.ids.S2.exclude()
+            #app.root.ids.S2.exclude()
             root.createkeyFlag = app.root.ids.S2.createkeyFlag # c'est le flag qui indique qu'il faut créer une clé
             app.root.ids.S2.key = root.loadkeyfile(self)
             app.root.ids.S2.closeChoixFichier()

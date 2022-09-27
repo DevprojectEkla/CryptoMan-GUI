@@ -1,14 +1,16 @@
 """Modules natifs, modules kivy, kivy properties, modules persos"""
 import os
+os.environ['KIVY_IMAGE'] = 'pil'
 
 from kivy.app import App
-from kivy.properties import ObjectProperty
+from kivy.config import Config
+# pour activer le clavier virtuel 
+# Config.set('kivy', 'keyboard_mode', 'systemanddock')
 from kivy.uix.button import Button
+from kivy.properties import ObjectProperty
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 # l'import suivant est utilisé lorsque l'on veut redimmensionner la fenêtre d'affichage
-from kivy.config import Config
-
 """ Contrairement aux indications de PyCharm ces imports sont nécessaires
 pour le fonctionnement du fichier cryptogui.kv
 car le ScreenManager fait appel à chacune de ces classes"""
@@ -27,6 +29,16 @@ from _05_DecrypterDossier import DecrypterDossier
 from _05_DecrypterFichier import DecrypterFichier
 import pdb # test de PythonDebugger mais pas encore en place...
 
+def reset():
+    import kivy.core.window as window
+    from kivy.base import EventLoop
+    if not EventLoop.event_listeners:
+        from kivy.cache import Cache
+        window.Window = window.core_select_lib('window', window.window_impl, True)
+        Cache.print_usage()
+        for cat in Cache._categories:
+            Cache._objects[cat] = {}
+
 class CryptoGUI(App):
     """Main Loop et screen manager de l'application"""
     app_path = os.path.dirname(os.path.abspath("_00_CryptoGUI.py"))
@@ -40,7 +52,7 @@ class CryptoGUI(App):
         # pdb.set_trace() python debugger
         
         # pour l'effet de presentation uncomment this:
-        # Window.minimize()
+        #Window.minimize()
         Window.fullscreen = True
         # not this:
         # Window.size = (800, 600) changement dynamique de la taille de fenêtre
@@ -48,7 +60,7 @@ class CryptoGUI(App):
         self.title = "CryptoMan v.2.0"
         algo = AlgoG()
         # uncomment this too
-        # algo.presentation2()
+        #algo.presentation2()
         os.chdir(self.app_path)
         Window.restore()
         sm = ScreenManager()
@@ -103,6 +115,7 @@ if __name__ == '__main__':
     # Config.set('graphics', 'width', '1440')
     # Config.set('graphics', 'height', '960')
     # Config.write()
+    # reset()
     CryptoGUI().run()
 
     # retour aux valeurs par défaut

@@ -46,6 +46,7 @@ class Key(File):
         '''Génère une clé et l'écrit dans le fichier en écrasant le contenu précédent
          l'opération de réécriture se fait sans essai et peut donc faire échouer le programme.'''
         self.initFlagOverWrite()
+        print("initNewKeyFile:launching overWriteKey in _02_KeyFile.py")
         self.overWriteKey()
 
     def selectOtherKeyFile(self, newpath):
