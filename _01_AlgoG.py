@@ -2,10 +2,8 @@
 import os
 import random
 import threading
-import winsound
 from multiprocessing import Pool  # essaie pour la fonction extractBytesAndEncrypt
 from crypt_message import read_bytes
-from winsound import PlaySound
 '''modules publics non natifs plus spécifiques '''
 
 '''modules personnels'''
@@ -458,18 +456,30 @@ class AlgoG:
 
 
     def play_sound(self,sound_file):
+        if os.name == "nt":
+            from winsound import PlaySound
+            source_dir = Path(self.app_path)
+            path = Path(sound_file)
+            sound_file = path.name
+            os.chdir(path.parent)
+            PlaySound(sound=sound_file, flags=winsound.SND_FILENAME)
+            os.chdir(source_dir)
+            print(os.getcwd())
+        else:
+            from kivy.core.audio import SoundLoader
+            sound = SoundLoader.load(sound_file)
+            if sound:
+                print("Sound found at %s" % sound.source)
+                print("Sound is %.3f seconds" % sound.length)
+                sound.play()
 
-        source_dir = Path(self.app_path)
-        path = Path(sound_file)
-        sound_file = path.name
-        os.chdir(path.parent)
-        PlaySound(sound=sound_file, flags=winsound.SND_FILENAME)
-        os.chdir(source_dir)
-        print(os.getcwd())
     
     def presentation2(self):
         os.system('COLOR 02')
-        args = [f"{self.app_path}\\audio\\menu.wav"]
+        if os.name == 'nt':
+            args = [f"{self.app_path}\\audio\\menu.wav"]
+        else:
+            args = [f"{self.app_path}/audio/menu.wav"]
         playsound = threading.Thread(target=self.play_sound, args=args)
         playsound.start()
         rand = random.Random()

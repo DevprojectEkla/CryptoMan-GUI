@@ -5,7 +5,7 @@ cryptography==36.0.2
 docutils==0.18.1
 idna==3.3
 Kivy==2.1.0
-kivy-deps.angle==0.3.2
+kivy-deps.angle==0.3.3
 kivy-deps.glew==0.3.1
 kivy-deps.gstreamer==0.3.3
 kivy-deps.sdl2==0.4.5
@@ -19,3 +19,13 @@ pypiwin32==223
 pywin32==303
 requests==2.27.1
 urllib3==1.26.9
+ocopt==0.6.2
+greenlet==2.0.1
+msgpack==1.0.4
+prompt-toolkit==3.0.32
+pyflakes==2.5.0
+Pygments==2.13.0
+pynvim==0.4.3
+pyvim==3.0.3
+six==1.16.0
+wcwidth==0.2.5

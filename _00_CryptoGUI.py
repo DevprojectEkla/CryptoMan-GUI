@@ -52,7 +52,7 @@ class CryptoGUI(App):
         # pdb.set_trace() python debugger
         
         # pour l'effet de presentation uncomment this:
-        #Window.minimize()
+        Window.minimize()
         Window.fullscreen = True
         # not this:
         # Window.size = (800, 600) changement dynamique de la taille de fenêtre
@@ -60,7 +60,7 @@ class CryptoGUI(App):
         self.title = "CryptoMan v.2.0"
         algo = AlgoG()
         # uncomment this too
-        #algo.presentation2()
+        algo.presentation2()
         os.chdir(self.app_path)
         Window.restore()
         sm = ScreenManager()

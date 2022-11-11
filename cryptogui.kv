@@ -4,10 +4,10 @@
 # Fonts disponibles: "Fonts\\arial.ttf", "Fonts\\courbd.ttf", "Fonts\\cour.ttf", "Fonts\\Cryptography.ttf" ; "Fonts\\matrix regular.ttf"
 # images disponibles: 'img/IconeCryptoMan.png'
 # ici on initialise des variables générales
-#:set font_titre "Fonts\\matrix regular.ttf"
-#:set font_input "Fonts\\lucon.ttf"
-#:set font_matrix "Fonts\\matrix regular.ttf"
-#:set font_window "Fonts\\arial.ttf"
+#:set font_titre "Fonts/matrix regular.ttf"
+#:set font_input "Fonts/lucon.ttf"
+#:set font_matrix "Fonts/matrix regular.ttf"
+#:set font_window "Fonts/arial.ttf"
 #:set font_size1 "30dp"
 #:set font_size2 "20dp"
 #:set font_size3 "25dp"
@@ -364,7 +364,8 @@ RootWidget:
             root.crypterFlag = app.root.ids.S1.setcrypterflag # c'est un flag qui indiquait qu'il fallait crypter ou pas
             # dans une ancienne version de l'appli où choixfichier était commun à plusieurs opérations.TODO: A supprimer
             root.exclude() # idem TODO: A supprimer
-            #app.root.ids.S2.exclude()
+            #app.root.ids.S2.exclude() j'ignore pourquoi j'ai mis cette ligne mais
+            # cela empêche de générer une nouvelle clé dès que l'on a fait une première encryption./ 
             root.createkeyFlag = app.root.ids.S2.createkeyFlag # c'est le flag qui indique qu'il faut créer une clé
             app.root.ids.S2.key = root.loadkeyfile(self)
             app.root.ids.S2.closeChoixFichier()

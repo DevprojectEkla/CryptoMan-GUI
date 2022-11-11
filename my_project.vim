@@ -13,15 +13,62 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +117 _00_CryptoGUI.py
-badd +0 cryptogui.kv
+badd +368 cryptogui.kv
+badd +1 _03_ChargerClef.py
+badd +122 _01_AlgoG.py
+badd +1 _03_ChoixFichierClef.py
+badd +1 _02_KeyFile.py
+badd +1 _00_CryptoGUI.py
+badd +1 __Tagbar__.3
 argglobal
 %argdel
 $argadd _00_CryptoGUI.py
 set stal=2
 tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
 tabrewind
 edit _00_CryptoGUI.py
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 63 - ((27 * winheight(0) + 18) / 37)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 63
+normal! 09|
+tabnext
+edit _01_AlgoG.py
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 121 - ((0 * winheight(0) + 18) / 37)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 121
+normal! 022|
+tabnext
+edit _03_ChargerClef.py
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -38,11 +85,33 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 31 + 73) / 146)
-exe 'vert 2resize ' . ((&columns * 114 + 73) / 146)
+exe 'vert 1resize ' . ((&columns * 86 + 86) / 172)
+exe 'vert 2resize ' . ((&columns * 85 + 86) / 172)
 argglobal
-enew
-file NERD_tree_1
+balt _03_ChoixFichierClef.py
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 30 - ((29 * winheight(0) + 18) / 37)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 30
+normal! 017|
+wincmd w
+argglobal
+if bufexists(fnamemodify("__Tagbar__.3", ":p")) | buffer __Tagbar__.3 | else | edit __Tagbar__.3 | endif
+if &buftype ==# 'terminal'
+  silent file __Tagbar__.3
+endif
+balt _03_ChargerClef.py
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -51,7 +120,19 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal nofen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 1 - ((0 * winheight(0) + 18) / 37)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 1
+normal! 0
 wincmd w
+exe 'vert 1resize ' . ((&columns * 86 + 86) / 172)
+exe 'vert 2resize ' . ((&columns * 85 + 86) / 172)
+tabnext
+edit _03_ChoixFichierClef.py
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -63,19 +144,35 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 117 - ((25 * winheight(0) + 15) / 31)
+let s:l = 22 - ((21 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 117
-normal! 0
-wincmd w
-exe 'vert 1resize ' . ((&columns * 31 + 73) / 146)
-exe 'vert 2resize ' . ((&columns * 114 + 73) / 146)
+keepjumps 22
+normal! 013|
+tabnext
+edit _02_KeyFile.py
+argglobal
+balt _03_ChargerClef.py
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 50 - ((31 * winheight(0) + 18) / 37)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 50
+normal! 025|
 tabnext
 edit cryptogui.kv
 argglobal
-balt cryptogui.kv
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -86,13 +183,13 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 99 - ((18 * winheight(0) + 15) / 30)
+let s:l = 368 - ((32 * winheight(0) + 18) / 37)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 99
-normal! 021|
-tabnext 2
+keepjumps 368
+normal! 014|
+tabnext 1
 set stal=1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
