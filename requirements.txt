@@ -3,7 +3,7 @@ cffi==1.15.0
 charset-normalizer==2.0.12
 cryptography==42.0.4
 docutils==0.18.1
-idna==3.3
+idna==3.7
 Kivy==2.1.0
 kivy-deps.angle==0.3.3
 kivy-deps.glew==0.3.1
