@@ -17,7 +17,7 @@ pycparser==2.21
 Pygments==2.11.2
 pypiwin32==223
 pywin32==303
-requests==2.27.1
+requests==2.32.2
 urllib3==1.26.9
 ocopt==0.6.2
 greenlet==2.0.1
