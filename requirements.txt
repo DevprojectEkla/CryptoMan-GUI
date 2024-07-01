@@ -18,7 +18,7 @@ Pygments==2.11.2
 pypiwin32==223
 pywin32==303
 requests==2.32.2
-urllib3==1.26.9
+urllib3==1.26.19
 ocopt==0.6.2
 greenlet==2.0.1
 msgpack==1.0.4
